@@ -1,0 +1,55 @@
+<div class="wk-dialog" id="{{ id }}">
+
+    <div class="wk-dialog-modal" data-dialog="{{ id }}">
+
+        <div
+            class="wk-dialog-popup"
+            style="max-width: {{ maxWidth ? ( maxWidth matches '/^\\d+$/' ? [maxWidth, 'px']|join : maxWidth ) : '100%' }}"
+            data-dialog="{{ id }}"
+        >
+                {# close button #}
+            {% if hideCloseButton is not same as(true) %}
+                <button class="wk-dialog-close" data-close-dialog="{{ id }}" data-dialog="{{ id }}">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                    </svg>
+                </button>
+            {% endif %}
+
+                {# dialog title #}
+            {% if block('title') is defined %}
+                <div class="wk-dialog-popup__title" data-dialog="{{ id }}">
+                    {% block title %}{% endblock %}
+                </div>
+            {% endif %}
+
+            {% if block('content') is defined %}
+                <div class="wk-dialog-popup__content" data-dialog="{{ id }}">
+                    {% block content %}{% endblock %}
+                </div>
+            {% endif %}
+
+            {% if block('footer') is defined %}
+                <div class="wk-dialog-popup__footer" data-dialog="{{ id }}">
+                    {% block footer %}{% endblock %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+{% block scripts %}
+    <script>
+        (function(){
+            window.wkDialogs['{{ id }}'] = new WkDialog({
+                el: document.getElementById('{{ id }}'),
+                el_id: '{{ id }}',
+                value: '{{ value ? value : null }}',
+                is_persistent: '{{ isPersistent ? isPersistent : null }}',
+                hide_modal: '{{ hideModal ? hideModal : null }}',
+                no_click_animation: '{{ no_click_animation ? no_click_animation : null }}'
+            });
+        })();
+    </script>
+{% endblock %}

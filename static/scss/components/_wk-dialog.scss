@@ -1,0 +1,135 @@
+.wk-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+
+    &-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        display: flex;
+        align-items: center;
+        opacity: 0;
+        transition: all .2s ease;
+
+        &--invisible {
+            background-color: transparent !important;
+        }
+
+        // STYLES: FULLSCREEN BACKGROUND
+        background-color: rgba(#000, .5);
+        // ---
+    }
+
+    &-popup {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        transform: scale(.95);
+        transition: all .2s ease;
+
+        &--no-shake {
+            animation: none !important;
+        }
+
+        @media screen and (max-width: 600px) {
+            width: 100%;
+            height: 100%;
+            max-height: 100vh;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        // STYLES: POPUP WINDOW
+        background-color: #FFF;
+        border-radius: 4px;
+        box-shadow: 4px 4px 16px rgba(#000, .2);
+        // ---
+
+        &__title {
+            max-width: calc(100% - 48px);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            // STYLES: TITLE
+            padding: 24px;
+            font-size: 24px;
+            line-height: 32px;
+            font-weight: $FONT_WEIGHT_BOLD;
+            // ---
+        }
+
+        &__content {
+            width: 100%;
+            max-height: 60vh;
+            overflow-y: auto;
+            @media screen and (max-width: 600px) {
+                max-height: 100%;
+                height: 100%;
+            }
+
+            // STYLES: CONTENT
+            padding: 24px;
+            border-top: solid 1px $SECONDARY_L90;
+            // ---
+        }
+
+        &__footer {
+            width: 100%;
+
+            // STYLES: CONTENT
+            padding: 24px;
+            // ---
+        }
+    }
+    
+    &-close {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        
+        & svg {
+            display: block;
+            pointer-events: none;
+
+            // STYLES: CLOSE BUTTON ICON
+            width: 32px;
+            height: 32px;
+            // ---
+        }
+
+        // STYLES: CLOSE BUTTON
+        top: 8px;
+        right: 8px;
+        color: #000;
+        transition: all .2s ease;
+
+        &:hover {
+            color: $PRIMARY;
+        }
+        // ---
+    }
+
+}
+
+@keyframes shakePopup {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(.99);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

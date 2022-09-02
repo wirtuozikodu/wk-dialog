@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WK-Inputs</title>
+    <link rel="stylesheet" href="/static/css/index.min.css">
+
+    <script src="/static/js/wk-dialogs.js"></script>
+</head>
+<body>
+
+    {% embed 'components/wk-dialog.twig' with {
+        id: 'dialog_beta',
+        maxWidth: 300,
+        hideModal: true
+    } only %}
+        {% block title %}
+            Title
+        {% endblock %}
+        {% block footer %}
+            Footer
+        {% endblock %}
+        {% block content %}
+            Content
+        {% endblock %}
+    {% endembed %}
+
+    {% embed 'components/wk-dialog.twig' with {
+        id: 'dialog_alpha',
+        hideModal: false,
+        maxWidth: 700,
+        hideCloseButton: false,
+        isPersistent: true,
+        noClickAnimation: false,
+        value: false,
+        hideModal: false
+    } only %}
+        {% block title %}
+            Przykładowy tytuł okna dialogowego
+        {% endblock %}
+        {% block footer %}
+            <div class="expl-buttons">
+                <button class="expl-btn" data-open-dialog="dialog_beta">Zatwierdź</button>
+                <button data-close-dialog="{{ id }}" class="expl-btn expl-btn--grey">Anuluj</button>
+            </div>
+        {% endblock %}
+        {% block content %}
+            Przykładowa zawartość okna dialogowego
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis officia placeat quibusdam, earum deleniti at ducimus velit aut voluptatem praesentium doloribus sequi distinctio perferendis doloremque fugiat eaque minus ratione consequatur. Quia repellendus possimus velit nisi nemo iure ipsum odit non fuga harum eaque deleniti obcaecati ratione, facilis magni provident minima corporis delectus aliquid ipsa exercitationem impedit! Quas, saepe hic mollitia qui libero voluptatum ipsa molestias voluptas tempora. Eos quibusdam quisquam veniam dolores, earum tempore illo ipsa optio esse velit officiis molestiae laborum accusamus blanditiis consequatur soluta corporis. Tempora ducimus, hic, quasi necessitatibus placeat iusto laudantium sit temporibus dolore in, cumque tenetur ullam aliquid recusandae fuga eos facilis. Ut, nesciunt velit esse consectetur voluptatem quae culpa, delectus ex hic eum provident voluptatibus asperiores nihil adipisci, excepturi rem quia inventore. Eveniet temporibus dignissimos, dolorem quas deleniti facilis doloribus aperiam sit provident quaerat eum perspiciatis corporis obcaecati ab aliquid suscipit, ut vel dolorum iusto aspernatur? Nisi corrupti id fuga ipsam assumenda, vitae ab! Dignissimos recusandae rerum sit a dolor quod repellat aut doloremque amet, saepe animi consectetur adipisci cum, maxime mollitia. Quaerat id temporibus fugiat doloremque aperiam reiciendis nihil debitis recusandae! Debitis neque obcaecati quidem distinctio dolor aut molestiae soluta sed, quisquam numquam deserunt velit eaque provident cupiditate, nulla voluptate quaerat aspernatur! Perferendis deserunt enim reprehenderit, deleniti soluta eum. Impedit a nesciunt vero aliquid sequi molestiae sed voluptas eius laudantium dignissimos, veritatis ea nam voluptates. Sed repellat fugiat veniam officiis aliquam voluptates deleniti, voluptatem nam. Mollitia architecto, nesciunt suscipit sit placeat pariatur labore veniam eligendi. Molestiae commodi perferendis magnam optio provident repellendus. Ut quidem eveniet voluptates aspernatur quos sint corrupti quia eos, veniam harum sequi fugiat cupiditate odio, provident repellendus quasi. Quis et mollitia veritatis reprehenderit debitis quae eius vitae molestias natus! Non inventore itaque deleniti culpa at repudiandae quo beatae, nemo necessitatibus obcaecati, odio minus illo ipsam eum qui vero natus consectetur amet quod voluptate quibusdam. Doloremque deleniti quasi debitis maiores temporibus animi! Impedit porro hic veritatis expedita nesciunt delectus quos quod odit libero error illo sunt sint, saepe placeat at deleniti sequi! Consequatur repellat unde ex natus eveniet quasi sequi facere quidem sit atque quisquam, excepturi blanditiis? Inventore accusamus id eius fuga accusantium qui doloremque vel at earum maiores similique voluptas doloribus labore unde dolorem fugiat quibusdam natus nisi asperiores fugit, pariatur eum distinctio vero? Animi impedit repellendus voluptatem sapiente distinctio possimus corporis, consectetur autem. Quasi debitis doloremque iste consectetur facere pariatur temporibus ad numquam voluptatibus, nostrum deleniti repellendus voluptas nobis fuga enim nam iure itaque laboriosam. Ducimus veniam minima cumque vel eligendi, ratione optio! Repudiandae iusto natus accusantium a officiis, blanditiis hic ullam quaerat iste, modi, dolore debitis dolor molestias eum nostrum atque quidem. Eum aliquam molestiae commodi blanditiis voluptas ex ea veritatis, sed in quas inventore nulla unde temporibus est eos deserunt labore natus nam corrupti veniam quisquam vitae libero iure molestias. Perspiciatis, velit saepe ullam eius ad dolore placeat laborum mollitia similique eligendi nisi perferendis maxime. Veritatis alias, culpa cumque quae dolor vitae voluptate corrupti ex perspiciatis maiores?
+        {% endblock %}
+    {% endembed %}
+
+    <div style="padding: 64px; max-width: 600px; margin: 0 auto;">
+        <h1>WK-Dialogs</h1>
+        <button class="expl-btn" data-open-dialog="dialog_alpha">Otwórz dialog 1</button>
+        <button class="expl-btn" data-open-dialog="dialog_beta">Otwórz dialog 2</button>
+    </div>
+
+    <script>
+
+        window.wkDialogs.dialog_alpha.on('open', (e) => {
+            console.log(e.dialog.value);
+        })
+        window.wkDialogs.dialog_alpha.once('close', (e) => {
+            console.log(e.dialog.el);
+        })
+
+    </script>
+</body>
+</html>
