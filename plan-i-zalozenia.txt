@@ -1,0 +1,59 @@
+Elementy WK Dialog:
+
+    - Komponent wk-dialog.twig
+        - Zawiera strukturę HTML oraz skrypt montujący do globalnego obiektu window.wkDialog
+        - Jest wywoływany za pomocą {% embed %},
+        - Przyjmuje właściwości:
+            - maxWidth | object: value, unit
+            - persistent | boolean - domyślnie false,
+            - noClickAnimation | boolean - domyślnie false,
+            - value | boolean - domyślnie false,
+            - hideModal | boolean - domyślnie false,
+            - hideCloseButton | boolean - domyślnie false,
+            - id | string - unikalny dla każdego dialogu,
+        - Przyjmuje sloty:
+            - title - tytuł na jedną linię z text-overflow: ellipsis,
+            - footer - stopka
+            - content - zawartość dialogu, overflow-y: auto (scroll)
+    
+    - Skrypt wk-dialog.js
+        - Zawiera funkcję (klasę) WkDialog obsługującą dodawane dialogi,
+        - Udostępnia globalne metody:
+            - updateInteractiveElements() - wykrywa w strukturze DOM elementy zawierające atrybuty:
+                - data-open-dialog="[ID]" - elementy o tym atrybucie otrzymają funkcjonalność otwierania dialogu i zadanym ID,
+                - data-close-dialog="[ID]" - elementy o tym atrybucie otrzymają funkcjonalność zamykania dialogu i zadanym ID,
+        - Udostępnia metody dialogu:
+            - getOpened() - pobiera stan otwarcia,
+            - setOpened(boolean) - ustawia stan otwarcia,
+            - getMaxWidth() - pobiera obiekt zawierający wartość i jednostkę maksymalnej szerokości,
+            - setMaxWidth(number, string) - ustawia wartość i jednostkę maksymalnej szerokości,
+            - getPersistent() - pobiera stan funkcji odpowiadającej za zamknięcie modala na kliknięciu,
+            - setPersistent(boolean) - ustawia stan powyższej,
+            - getHideModal() - pobiera stan widoczności modala,
+            - setHideModal(boolean) - ustawia stan widoczności modala (aplikacja po kolejnym otwarciu),
+            - getNoClickAnimation() - pobiera stan widoczności animacji przy próbie zamknięcia przez kliknięcie na zewnątrz dialogu,
+            - setNoClickAnimation(boolean) - ustawia stan widoczności powyższej,
+            - getOnOpenMethods() - pobiera obiekt metod wykonywanych podczas otwierania dialogu,
+            - addOnOpenMethod(function(d)) - dodaje metodę wykonywaną podczas otwierania dialogu,
+                - dodawana funkcja otrzymuje atrybut (d):
+                    - d - otwierany element,
+                    - d.modal - modal otwieranego elementu,
+                    - d.dialog - dialog otwieranego elementu,
+            - clearOnOpenMethods() - usuwa wszystkie metody wykonywane podczas otwierania dialogu,
+            - getOnCloseMethods() - pobiera obiekt metod wykonywanych podczas zamykania dialogu,
+            - addOnCloseMethod(function(d)) - dodaje metodę wykonywaną podczas zamykania dialogu,
+                - dodawana funkcja otrzymuje atrybut (d):
+                    - d - zamykany element,
+                    - d.modal - modal zamykanego elementu,
+                    - d.dialog - dialog zamykanego elementu,
+            - clearOnCloseMethods() - usuwa wszystkie metody wykonywane podczas zamykania dialogu,
+            (Z metodami od onOpen i onClose poszedłem logiką Rules z wkInputs, jeśli mam to rozwiązać za pomocą .on('<close etc.>', () => {}), tak się wydarzy, wtedy może się nawet pododawać więcej eventów),
+        - Przy każdym otwarciu:
+            - Przenosi dialog na koniec body,
+            - Dodaje funkcjonalność przycisku ESC dla bieżącego dialogu,
+        - Przy każdym zamknięciu:
+            - Usuwa funkcjonalność przycisku ESC dla zamykanego dialogu
+
+    - Arkusz styli komponentu _wk-dialog.scss
+        - Zawiera domyślne style komponentu
+        - Jak najbardziej przystępny do modyfikacji pod kątem konkretnych projektów
