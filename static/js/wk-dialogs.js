@@ -130,6 +130,8 @@ function WkDialog(opts) {
                 dialog: this
             });
 
+            this.el.style.zIndex = '0';
+
             let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
             if(closingIndex !== -1) {
                 wkDialogs.activeDialogs.splice(closingIndex, 1);
