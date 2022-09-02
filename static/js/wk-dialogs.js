@@ -197,6 +197,10 @@ function WkDialog(opts) {
 
     this.softClose = () => {
         if(this.is_persistent) {
+            this.eventBus.emit('closeAttempt', {
+                dialog: this
+            });
+
             this.popup.style.animation = 'shakePopup .2s ease';
             setTimeout(() => {
                 this.popup.style.animation = 'none';

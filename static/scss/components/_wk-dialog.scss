@@ -33,6 +33,10 @@
         transform: scale(.95);
         transition: all .2s ease;
 
+        @media screen and (max-width: 600px) {
+            max-width: 100% !important;
+        }
+
         &--no-shake {
             animation: none !important;
         }

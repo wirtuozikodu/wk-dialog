@@ -66,6 +66,11 @@
         window.wkDialogs.dialog_alpha.once('close', (e) => {
             console.log(e.dialog.el);
         })
+        window.wkDialogs.dialog_alpha.once('closeAttempt', (e) => {
+            setTimeout(function(){
+                alert("Nie wolno!");
+            }, 400);
+        })
 
     </script>
 </body>
