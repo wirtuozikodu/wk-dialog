@@ -13,18 +13,22 @@
 
     {% embed 'components/wk-dialog.twig' with {
         id: 'dialog_beta',
-        maxWidth: 300,
+        maxWidth: 700,
+        hideCloseButton: false,
         hideModal: true,
-        allowBodyScroll: true
+        isPersistent: true,
+        noClickAnimation: false,
+        value: true,
+        allowBodyScroll: false
     } only %}
         {% block title %}
-            Title
-        {% endblock %}
-        {% block footer %}
-            Footer
+            Tytuł okna dialogowego
         {% endblock %}
         {% block content %}
-            Content
+            Treść okna dialogowego
+        {% endblock %}
+        {% block footer %}
+            Stopka okna dialogowego
         {% endblock %}
     {% endembed %}
 
@@ -36,7 +40,6 @@
         isPersistent: true,
         noClickAnimation: false,
         value: true,
-        hideModal: false,
         allowBodyScroll: true
     } only %}
         {% block title %}
