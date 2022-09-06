@@ -35,29 +35,4 @@ body {
     overflow-x: hidden;
 }
 
-.expl {
-    &-buttons {
-        display: flex;
-        flex-direction: row-reverse;
-        align-items: center;
-    }
-    &-btn {
-        display: inline-block;
-        font-family: inherit;
-        font-size: 15px;
-        line-height: 15px;
-        font-weight: $FONT_WEIGHT_BOLD;
-        padding: 8px 24px;
-        cursor: pointer;
-        border: none;
-        background-color: $PRIMARY;
-        border-radius: 4px;
-        margin-left: 8px;
-
-        &--grey {
-            background-color: $SECONDARY_L90;
-        }
-    }
-}
-
 @import "./components/index";

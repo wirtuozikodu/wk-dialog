@@ -66,6 +66,9 @@ function WkDialog(opts) {
     this.is_persistent = ( opts.is_persistent && opts.is_persistent == true ? true : false );
     this.hide_modal = ( opts.hide_modal && opts.hide_modal == true ? true : false );
     this.no_click_animation = ( opts.no_click_animation && opts.no_click_animation == true ? true : false );
+    this.allow_body_scroll = ( opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false );
+    this.openingNode = null;
+    this.closingNode = null;
 
 
     // child elements
@@ -73,8 +76,8 @@ function WkDialog(opts) {
     this.modal = document.querySelector(
         '.wk-dialog-modal[data-dialog="' + this.el_id + '"]'
     );
-    this.popup = document.querySelector(
-        '.wk-dialog-popup[data-dialog="' + this.el_id + '"]'
+    this.window = document.querySelector(
+        '.wk-dialog-window[data-dialog="' + this.el_id + '"]'
     );
 
 
@@ -105,8 +108,13 @@ function WkDialog(opts) {
 
         if(this.value == true) {
             this.eventBus.emit('open', {
-                dialog: this
+                dialog: this,
+                actionNode: this.openingNode
             });
+
+            if(!this.allow_body_scroll) {
+                document.body.style.overflowY = 'hidden';
+            }
 
             document.body.appendChild(document.getElementById(this.el_id));
             this.el.style.zIndex = getMaxZIndex() + 1;
@@ -121,16 +129,17 @@ function WkDialog(opts) {
             this.el.style.display = 'block';
             setTimeout(() => {
                 this.modal.style.opacity = '1';
-                this.popup.style.transform = 'scale(1)';
+                this.window.style.transform = 'scale(1)';
             }, 50);
 
             return;
         } else {
             this.eventBus.emit('close', {
-                dialog: this
+                dialog: this,
+                actionNode: this.closingNode
             });
 
-            this.el.style.zIndex = '0';
+            document.body.style.overflowY = 'auto';
 
             let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
             if(closingIndex !== -1) {
@@ -138,9 +147,10 @@ function WkDialog(opts) {
             }
 
             this.modal.style.opacity = '0';
-            this.popup.style.transform = 'scale(.95)';
+            this.window.style.transform = 'scale(.95)';
             setTimeout(() => {
                 this.el.style.display = 'none';
+                this.el.style.zIndex = '0';
             }, 250);
 
             return;
@@ -148,14 +158,14 @@ function WkDialog(opts) {
     }
 
     this.getMaxWidth = () => {
-        return this.popup.style.maxWidth;
+        return this.window.style.maxWidth;
     }
     this.setMaxWidth = (v) => {
         if(!isNaN(v)) {
-            this.popup.style.maxWidth = v + 'px';
+            this.window.style.maxWidth = v + 'px';
             return;
         } else {
-            this.popup.style.maxWidth = v;
+            this.window.style.maxWidth = v;
             return;
         }
     }
@@ -188,8 +198,8 @@ function WkDialog(opts) {
 
         this.no_click_animation = v;
 
-        if(this.no_click_animation === true) this.popup.classList.add('wk-dialog-popup--no-shake');
-        if(this.no_click_animation === false) this.popup.classList.remove('wk-dialog-popup--no-shake');
+        if(this.no_click_animation === true) this.window.classList.add('wk-dialog-window--no-shake');
+        if(this.no_click_animation === false) this.window.classList.remove('wk-dialog-window--no-shake');
 
         return;
     }
@@ -197,15 +207,15 @@ function WkDialog(opts) {
 
     // internal methods
 
-    this.softClose = () => {
+    this.cancel = () => {
         if(this.is_persistent) {
             this.eventBus.emit('closeAttempt', {
                 dialog: this
             });
 
-            this.popup.style.animation = 'shakePopup .2s ease';
+            this.window.style.animation = 'shakeWindow .2s ease';
             setTimeout(() => {
-                this.popup.style.animation = 'none';
+                this.window.style.animation = 'none';
                 return;
             }, 200)
         } else {
@@ -225,13 +235,15 @@ function WkDialog(opts) {
 window.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', function(e) {;
         if(e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
+            wkDialogs[e.target.dataset.openDialog].openingNode = e.target;
             wkDialogs[e.target.dataset.openDialog].setValue(true);
             return;
         } else if(e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
+            wkDialogs[e.target.dataset.closeDialog].closingNode = e.target;
             wkDialogs[e.target.dataset.closeDialog].setValue(false);
             return;
         } else if(e.target.classList.contains('wk-dialog-modal')) {
-            wkDialogs[e.target.dataset.dialog].softClose();
+            wkDialogs[e.target.dataset.dialog].cancel();
             return;
         }
     })
@@ -240,7 +252,7 @@ window.addEventListener('DOMContentLoaded', () => {
         if(e.key !== "Escape") return;
         if(window.wkDialogs.activeDialogs.length === 0) return;
         
-        window.wkDialogs[wkDialogs.activeDialogs[wkDialogs.activeDialogs.length - 1]].softClose();
+        window.wkDialogs[wkDialogs.activeDialogs[wkDialogs.activeDialogs.length - 1]].cancel();
     
         return;
     });
@@ -248,9 +260,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
 
-function getMaxZIndex() {
+function getMaxZIndex(element) {
+    let children_array = (element ? element.querySelectorAll('*') : document.querySelectorAll('body *'));
+
     return Math.max(
-        ...Array.from(document.querySelectorAll('body *'), el =>
+        ...Array.from(children_array, el =>
             parseFloat(window.getComputedStyle(el).zIndex),
         ).filter(zIndex => !Number.isNaN(zIndex)),
         0,

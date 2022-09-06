@@ -6,6 +6,11 @@
     height: 100%;
     display: none;
 
+    --dialog-padding: 24px;
+    @media screen and (max-width: 600px) {
+        --dialog-padding: 16px;
+    }
+
     &-modal {
         width: 100%;
         height: 100%;
@@ -24,7 +29,7 @@
         // ---
     }
 
-    &-popup {
+    &-window {
         width: 100%;
         max-width: 100%;
         margin: 0 auto;
@@ -50,23 +55,58 @@
             flex-direction: column;
         }
 
-        // STYLES: POPUP WINDOW
+        // STYLES: DIALOG WINDOW
         background-color: #FFF;
         border-radius: 4px;
         box-shadow: 4px 4px 16px rgba(#000, .2);
         // ---
 
         &__title {
-            max-width: calc(100% - 48px);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-            // STYLES: TITLE
-            padding: 24px;
-            font-size: 24px;
-            line-height: 32px;
-            font-weight: $FONT_WEIGHT_BOLD;
+            &-text {
+                max-width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                padding: 24px var(--dialog-padding);
+
+                // STYLES: TITLE
+                font-size: 20px;
+                line-height: 1em;
+                font-weight: $FONT_WEIGHT_BOLD;
+                // ---
+            }
+        }
+
+        &__close {
+            padding: 0;
+            margin: 0;
+            margin-right: var(--dialog-padding);
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            
+            & svg {
+                display: block;
+                pointer-events: none;
+
+                // STYLES: CLOSE BUTTON ICON
+                width: 24px;
+                height: 24px;
+                // ---
+            }
+
+            // STYLES: CLOSE BUTTON
+            color: #000;
+            transition: all .2s ease;
+
+            &:hover {
+                color: $PRIMARY;
+            }
             // ---
         }
 
@@ -80,8 +120,9 @@
             }
 
             // STYLES: CONTENT
-            padding: 24px;
-            border-top: solid 1px $SECONDARY_L90;
+            padding: var(--dialog-padding);
+            border-top: solid 1px #00000010;
+            border-bottom: solid 1px #00000010;
             // ---
         }
 
@@ -89,44 +130,50 @@
             width: 100%;
 
             // STYLES: CONTENT
-            padding: 24px;
+            padding: var(--dialog-padding);
             // ---
         }
     }
-    
-    &-close {
-        position: absolute;
-        padding: 0;
-        margin: 0;
-        background-color: transparent;
+
+    &-button {
+        display: inline-block;
         border: none;
+        font-size: inherit;
+        line-height: 1em;
+        text-align: center;
+        font-family: inherit;
+        font-weight: $FONT_WEIGHT_BOLD;
+        letter-spacing: .4px;
         cursor: pointer;
-        
-        & svg {
-            display: block;
-            pointer-events: none;
-
-            // STYLES: CLOSE BUTTON ICON
-            width: 32px;
-            height: 32px;
-            // ---
-        }
-
-        // STYLES: CLOSE BUTTON
-        top: 8px;
-        right: 8px;
-        color: #000;
+        padding: 8px 24px;
+        border-radius: 2px;
         transition: all .2s ease;
-
-        &:hover {
-            color: $PRIMARY;
+        &:not(:last-of-type) {
+            margin-left: 8px;
         }
-        // ---
+
+        background-color: $PRIMARY;
+        &:hover {
+            background-color: $PRIMARY_L;
+        }
+
+        &--text {
+            background-color: transparent;
+            &:hover {
+                background-color: #F8F8F8;
+            }
+        }
+    }
+
+    &-actions {
+        display: flex;
+        flex-direction: row-reverse;
+        align-items: center;
     }
 
 }
 
-@keyframes shakePopup {
+@keyframes shakeWindow {
     0% {
         transform: scale(1);
     }

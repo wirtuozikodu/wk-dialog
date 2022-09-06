@@ -34,16 +34,17 @@
         hideCloseButton: false,
         isPersistent: true,
         noClickAnimation: false,
-        value: false,
-        hideModal: false
+        value: true,
+        hideModal: false,
+        preventBodyScroll: true
     } only %}
         {% block title %}
             Przykładowy tytuł okna dialogowego
         {% endblock %}
         {% block footer %}
-            <div class="expl-buttons">
-                <button class="expl-btn" data-open-dialog="dialog_beta">Zatwierdź</button>
-                <button data-close-dialog="{{ id }}" class="expl-btn expl-btn--grey">Anuluj</button>
+            <div class="wk-dialog-actions">
+                <button class="wk-dialog-button" data-open-dialog="dialog_beta">Zatwierdź</button>
+                <button class="wk-dialog-button wk-dialog-button--text" data-close-dialog="{{ id }}">Anuluj</button>
             </div>
         {% endblock %}
         {% block content %}
@@ -66,7 +67,7 @@
         window.wkDialogs.dialog_alpha.once('close', (e) => {
             console.log(e.dialog.el);
         })
-        window.wkDialogs.dialog_alpha.once('closeAttempt', (e) => {
+        window.wkDialogs.dialog_alpha.once('cancel', (e) => {
             setTimeout(function(){
                 alert("Nie wolno!");
             }, 400);
