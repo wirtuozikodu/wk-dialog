@@ -14,7 +14,8 @@
     {% embed 'components/wk-dialog.twig' with {
         id: 'dialog_beta',
         maxWidth: 300,
-        hideModal: true
+        hideModal: true,
+        allowBodyScroll: true
     } only %}
         {% block title %}
             Title
@@ -58,6 +59,7 @@
         <button class="expl-btn" data-open-dialog="dialog_alpha">Otwórz dialog 1</button>
         <button class="expl-btn" data-open-dialog="dialog_beta">Otwórz dialog 2</button>
     </div>
+    <div style="height: 1920px;"></div>
 
     <script>
 

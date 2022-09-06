@@ -2,7 +2,9 @@
 
 window.wkDialogs = window.wkDialogs || {};
 
+    // array of active dialogs (to close them in order)
 window.wkDialogs.activeDialogs = [];
+
 
 // event bus
 
@@ -71,7 +73,7 @@ function WkDialog(opts) {
     this.closingNode = null;
 
 
-    // child elements
+    // children
 
     this.modal = document.querySelector(
         '.wk-dialog-modal[data-dialog="' + this.el_id + '"]'
@@ -81,7 +83,7 @@ function WkDialog(opts) {
     );
 
 
-    // event bus
+    // events
 
     this.eventBus = new WkDialogsEventBus();
 
@@ -98,6 +100,7 @@ function WkDialog(opts) {
 
     // external methods
 
+        // open/close
     this.getValue = () => {
         return this.value;
     }
@@ -157,6 +160,7 @@ function WkDialog(opts) {
         }
     }
 
+        // CSS dialog max-width
     this.getMaxWidth = () => {
         return this.window.style.maxWidth;
     }
@@ -170,6 +174,7 @@ function WkDialog(opts) {
         }
     }
 
+        // persistent state for this.cancel()
     this.getPersistent = () => {
         return this.is_persistent;
     }
@@ -180,6 +185,7 @@ function WkDialog(opts) {
         return;
     }
 
+        // modal visibility
     this.getHideModal = () => {
         return this.hide_modal;
     }
@@ -190,6 +196,7 @@ function WkDialog(opts) {
         return;
     }
 
+        // cancel animation visibility
     this.getNoClickAnimation = () => {
         return this.no_click_animation;
     }
@@ -204,12 +211,30 @@ function WkDialog(opts) {
         return;
     }
 
+        // state of scroll blocking feature
+    this.getAllowBodyScroll = () => {
+        return this.allow_body_scroll;
+    }
+    this.setAllowBodyScroll = (v) => {
+        if(v !== true && v !== false) return;
+
+        this.allow_body_scroll = v;
+
+        if(this.value === true) {
+            if(this.allow_body_scroll === true) document.body.style.overflowY = 'auto';
+            if(this.allow_body_scroll === false) document.body.style.overflowY = 'hidden';
+        }
+
+        return;
+    }
+
 
     // internal methods
 
+        // cancel ("soft close")
     this.cancel = () => {
         if(this.is_persistent) {
-            this.eventBus.emit('closeAttempt', {
+            this.eventBus.emit('cancel', {
                 dialog: this
             });
 
@@ -225,29 +250,45 @@ function WkDialog(opts) {
     }
 
 
-    // mounting
+    // mounting 
+
+        // opening if initial value=true
     if(this.value == true) {
         return this.setValue(true);
     }
 
 }
 
+    // global event listeners for core functions
 window.addEventListener('DOMContentLoaded', () => {
+
+        // binded DOM elements
     document.body.addEventListener('click', function(e) {;
+            // elements opening dialog
         if(e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
+                // updating the node responsible for opening action
             wkDialogs[e.target.dataset.openDialog].openingNode = e.target;
+                // opening the dialog
             wkDialogs[e.target.dataset.openDialog].setValue(true);
             return;
-        } else if(e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
+        }
+            // elements closing dialog
+        else if(e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
+                // updating the node responsible for closing action
             wkDialogs[e.target.dataset.closeDialog].closingNode = e.target;
+                // closing the dialog
             wkDialogs[e.target.dataset.closeDialog].setValue(false);
             return;
-        } else if(e.target.classList.contains('wk-dialog-modal')) {
+        }
+            // cancel feature
+        else if(e.target.classList.contains('wk-dialog-modal')) {
+                // cancel attempt
             wkDialogs[e.target.dataset.dialog].cancel();
             return;
         }
     })
     
+        // global ESC function triggering cancel() method
     document.addEventListener('keydown', function(e){
         if(e.key !== "Escape") return;
         if(window.wkDialogs.activeDialogs.length === 0) return;
@@ -259,7 +300,7 @@ window.addEventListener('DOMContentLoaded', () => {
 })
 
 
-
+    // getting the highest z-index of element (body by default)
 function getMaxZIndex(element) {
     let children_array = (element ? element.querySelectorAll('*') : document.querySelectorAll('body *'));
 
