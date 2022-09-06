@@ -78,6 +78,12 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
  
 [Powrót do spisu treści](#spis-tresci)
 
+Każdy z komponentów udostępnia własny zestaw metod możliwych do wywołania za pomocą:
+```javascript
+	wkDialogs.id_dialogu.metoda();
+```
+Lista dostępnych metod znajduje się poniżej:
+
  - `getValue()` - pozwala na pobranie stanu otwarcia okna dialogowego,
  - `setValue(boolean)` - pozwala na programistyczne ustawienie stanu otwarcia okna dialogowego,
  - `getMaxWidth()` - pozwala na pobranie maksymalnej szerokości okna dialogowego,
