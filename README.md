@@ -17,7 +17,7 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
 [Powrót do spisu treści](#spis-tresci)
 
  1. Komponent `wk-dialog.twig` korzysta z uniwersalnej klasy `WkDialog` zapewniającej działanie i enkapsulację właściwości i metod dla każdego z dodanych dialogów.
- 2. Wszystkie dialogi oraz właściwości pomocnicze dodawane są do globalnie dostępnego obiektu `wkDialogs` umieszczonym w obiekcie `window`.
+ 2. Wszystkie dialogi oraz właściwości pomocnicze dodawane są do globalnie dostępnego obiektu `wkDialogs` umieszczonego w obiekcie `window`.
  3. Właściwości pomocnicze obiektu `wkDialogs`:
 	- `activeDialogs` - tablica zawierająca id aktywnych (otwartych) dialogów w kolejności ich otwierania,
 
