@@ -1,6 +1,8 @@
 # WkDialogs (Twig)
 Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o czysty JavaScript
-## Spis treści
+
+<h2 id="spis-tresci">Spis tresci</h2>
+
  1. [Informacje podstawowe](#informacje)
  2. [Stosowanie](#stosowanie)
  3. [Właściwości](#wlasciwosci)
@@ -12,6 +14,8 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
 
 <h2 id="informacje">1. Informacje podstawowe</h2>
 
+[Powrót do spisu treści](#spis-tresci)
+
  1. Komponent `wk-dialog.twig` korzysta z uniwersalnej klasy `WkDialog` zapewniającej działanie i enkapsulację właściwości i metod dla każdego z dodanych dialogów.
  2. Wszystkie dialogi oraz właściwości pomocnicze dodawane są do globalnie dostępnego obiektu `wkDialogs` umieszczonym w obiekcie `window`.
  3. Właściwości pomocnicze obiektu `wkDialogs`:
@@ -19,13 +23,15 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
 
 <h2 id="stosowanie">2. Stosowanie</h2>
 
+[Powrót do spisu treści](#spis-tresci)
+
  1. Aby skorzystać z komponentu `wk-dialog.twig`, należy **UPRZEDNIO** (najlepiej w sekcji `<head>`) zaimportować skrypt `wk-dialogs.js`.
  2. Każdy z dołączanych komponentów inicjalizuje się po stronie JS automatycznie i nie wymaga podejmowania żadnych dodatkowych akcji.
  4. Każdy z dołączanych komponentów **MUSI** posiadać unikatowe `id` przekazywane we właściwościach komponentu. Będzie to jego identyfikator w obiekcie `wkDialogs`.
  5. Stosując komponent `wk-dialog.twig` należy skorzystać z funkcji `{% embed %}` i za jej pomocą przekazać obiekt właściwości - `with {} only` oraz bloki treści - `{% block %}`, przykładowo:
  ```twig
-{% embed 'components/wk-dialog.twig with {
-    id: 'dialog_alpha,
+{% embed 'components/wk-dialog.twig' with {
+    id: 'dialog_alpha',
     maxWidth: 700,
     hideCloseButton: false,
     hideModal: true,
@@ -49,6 +55,8 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
 
 <h2 id="wlasciwosci">3. Właściwości</h2>
 
+[Powrót do spisu treści](#spis-tresci)
+
  - `id` **(string: null)** - **unikalny** identyfikator okna dialogowego, pod jego treścią komponent dodawany jest do globalnego obiektu `wkDialogs`,
  - `value` **(boolean: false)** - początkowy stan okna dialogowego (true - otwarte, false - zamknięte),
  - `maxWidth` **(int/string: '100%')** - maksymalna szerokość okna dialogowego. Po podaniu wyłącznie wartości liczbowej (int/string) zostanie ona ustawiona w pikselach. Po podaniu wartości z jednostką (string) - jednostka zostanie uwzględniona.
@@ -60,11 +68,15 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
  
  <h2 id="bloki">4. Bloki treści</h2>
  
+[Powrót do spisu treści](#spis-tresci)
+ 
  - `title` - pozwala na przekazanie kodu HTML do umieszczenia w nagłówku okna dialogowego - treść jest domyślnie ograniczona do jednej linii z `text-overflow: ellipsis`. Zmiana tego stanu rzeczy nie jest zalecana.
  - `content` - pozwala na przekazanie kodu HTML do umieszczenia w treści okna dialogowego - wysokość treści nie jest ograniczona; kiedy zawartość wykracza poza wysokość okna, automatycznie pojawia się możliwość jego przewijania.
  - `footer` - pozwala na przekazanie kodu HTML do umieszczenia w stopce okna dialogowego (np. przyciski "Zatwierdź" czy "Anuluj".
 
  <h2 id="metody">5. Dostępne metody</h2>
+ 
+[Powrót do spisu treści](#spis-tresci)
 
  - `getValue()` - pozwala na pobranie stanu otwarcia okna dialogowego,
  - `setValue(boolean)` - pozwala na programistyczne ustawienie stanu otwarcia okna dialogowego,
@@ -82,6 +94,8 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
  - `setAllowBodyScroll(boolean)` - pozwala na programistyczne ustawienie stanu funkcji umożliwiającej przewijanie strony po otwarciu okna dialogowego,
 
  <h2 id="otwieranie-zamykanie">6. Otwieranie/zamykanie okien</h2>
+
+[Powrót do spisu treści](#spis-tresci)
 
  1. Skrypt `wk-dialogs.js` w sposób automatyczny dodaje globalną funkcję wyszukującą elementy o przypisanych atrybutach typu `data-` umożliwiających otwieranie i zamykanie poszczególnych okien dialogowych.
  2. Aby **otworzyć** okno dialogowe po kliknięciu w dany element strony, należy przekazać mu atrybut `data-open-dialog` i umieścić w nim `id` pożądanego okna, np.:
@@ -108,6 +122,8 @@ Pozwoli to na uniknięcie błędów przy ewentualnej zmianie atybutu `id`.
 6. Ponadto po otwarciu, dialog otrzymuje wartość `z-index` większą o 1 od najwyższej wartości `z-index` wśród elementów strony. Po zamknięciu, celem uniknięcia nieskończonej inkrementacji owej wartości, dialog otrzymuje `z-index: 0`.
 
  <h2 id="zdarzenia">7. Zdarzenia</h2>
+
+[Powrót do spisu treści](#spis-tresci)
 
 Każdy z dodanych komponentów rozgłasza własne zdarzenia. Ich nasłuchiwanie jest możliwe poprzez następującą składnię:
 ```javascript
@@ -143,6 +159,8 @@ wkDialog.dialog_alpha.on('open', function(e) {
 handler naturalnie może być również funkcją strzałkową.
 
 <h2 id="klasy-przyciskow">8. Domyślne klasy przycisków</h2>
+
+[Powrót do spisu treści](#spis-tresci)
 
 Plik `_wk-dialog.scss` oprócz domyślnego stylowania okna dialogowego, zawiera również uniwersalne style przycisków. Są to kolejno:
 
