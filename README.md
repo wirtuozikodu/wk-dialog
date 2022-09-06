@@ -80,7 +80,7 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
 
 Każdy z komponentów udostępnia własny zestaw metod możliwych do wywołania za pomocą:
 ```javascript
-	wkDialogs.id_dialogu.metoda();
+wkDialogs.id_dialogu.metoda();
 ```
 Lista dostępnych metod znajduje się poniżej:
 
