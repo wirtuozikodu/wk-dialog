@@ -153,7 +153,7 @@ Ponadto domyślny obiekt przekazywany funkcji obsługującej zdarzenie zawiera n
 
 Przykład handlera dla zdarzenia:
 ```javascript
-wkDialog.dialog_alpha.on('open', function(e) {
+wkDialogs.dialog_alpha.on('open', function(e) {
 
     console.log('To ja otworzyłem dialog:');
     console.log(e.actionNode);
