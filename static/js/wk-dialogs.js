@@ -69,8 +69,6 @@ function WkDialog(opts) {
     this.hide_modal = ( opts.hide_modal && opts.hide_modal == true ? true : false );
     this.no_click_animation = ( opts.no_click_animation && opts.no_click_animation == true ? true : false );
     this.allow_body_scroll = ( opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false );
-    this.openingNode = null;
-    this.closingNode = null;
 
 
     // children
@@ -104,7 +102,7 @@ function WkDialog(opts) {
     this.getValue = () => {
         return this.value;
     }
-    this.setValue = (v) => {
+    this.setValue = (v, triggerNode) => {
         if(v !== true && v !== false) return;
 
         this.value = v;
@@ -112,16 +110,13 @@ function WkDialog(opts) {
         if(this.value == true) {
             this.eventBus.emit('open', {
                 dialog: this,
-                actionNode: this.openingNode
+                triggerNode: (triggerNode ? triggerNode : null)
             });
 
             if(!this.allow_body_scroll) {
-                document.body.style.overflowY = 'hidden';
+                this.preventBodyScroll();
             }
-
-            document.body.appendChild(document.getElementById(this.el_id));
-            this.el.style.zIndex = getMaxZIndex() + 1;
-            wkDialogs.activeDialogs.push(this.el_id);
+            this.setOnTop();
 
             if(this.hide_modal) {
                 this.modal.classList.add('wk-dialog-modal--invisible');
@@ -139,15 +134,11 @@ function WkDialog(opts) {
         } else {
             this.eventBus.emit('close', {
                 dialog: this,
-                actionNode: this.closingNode
+                triggerNode: (triggerNode ? triggerNode : null)
             });
 
-            document.body.style.overflowY = 'auto';
-
-            let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
-            if(closingIndex !== -1) {
-                wkDialogs.activeDialogs.splice(closingIndex, 1);
-            }
+            this.allowBodyScroll();
+            this.setOnBottom();
 
             this.modal.style.opacity = '0';
             this.window.style.transform = 'scale(.95)';
@@ -221,8 +212,8 @@ function WkDialog(opts) {
         this.allow_body_scroll = v;
 
         if(this.value === true) {
-            if(this.allow_body_scroll === true) document.body.style.overflowY = 'auto';
-            if(this.allow_body_scroll === false) document.body.style.overflowY = 'hidden';
+            if(this.allow_body_scroll === true) this.allowBodyScroll();
+            if(this.allow_body_scroll === false) this.preventBodyScroll();
         }
 
         return;
@@ -249,6 +240,33 @@ function WkDialog(opts) {
         }
     }
 
+    this.preventBodyScroll = () => {
+        document.body.style.overflowY = 'hidden';
+        return;
+    }
+    this.allowBodyScroll = () => {
+        if(wkDialogs.activeDialogs.length > 1) return;
+
+        document.body.style.overflowY = 'auto';
+        return;
+    }
+
+    this.setOnTop = () => {
+        document.body.appendChild(document.getElementById(this.el_id));
+        this.el.style.zIndex = getMaxZIndex() + 1;
+        wkDialogs.activeDialogs.push(this.el_id);
+
+        return;
+    }
+    this.setOnBottom = () => {
+        let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
+        if(closingIndex !== -1) {
+            wkDialogs.activeDialogs.splice(closingIndex, 1);
+        }
+
+        return;
+    }
+
 
     // mounting 
 
@@ -266,18 +284,14 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', function(e) {;
             // elements opening dialog
         if(e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
-                // updating the node responsible for opening action
-            wkDialogs[e.target.dataset.openDialog].openingNode = e.target;
                 // opening the dialog
-            wkDialogs[e.target.dataset.openDialog].setValue(true);
+            wkDialogs[e.target.dataset.openDialog].setValue(true, e.target);
             return;
         }
             // elements closing dialog
         else if(e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
-                // updating the node responsible for closing action
-            wkDialogs[e.target.dataset.closeDialog].closingNode = e.target;
                 // closing the dialog
-            wkDialogs[e.target.dataset.closeDialog].setValue(false);
+            wkDialogs[e.target.dataset.closeDialog].setValue(false, e.target);
             return;
         }
             // cancel feature

@@ -1,3 +1,49 @@
+// AVAILABLE VARIABLES
+
+        // DIALOG (WINDOW)
+    $dialog_padding: 24px;
+    @media screen and (max-width: 600px) {
+        $dialog_padding: 16px;
+    }
+    $dialog_background: #FFF;
+    $dialog_border_radius: 4px;
+    $dialog_shadow: 4px 4px 16px rgba(#000, .2);
+
+        // DIALOG TITLE
+    $dialog_title_font_size: 20px;
+    $dialog_title_font_weight: 700;
+
+        // DIALOG CLOSE BUTTON
+    $dialog_close_button_size: 24px;
+    $dialog_close_button_color: #000;
+    $dialog_close_button_hover: $PRIMARY;
+
+        // DIALOG CONTENT
+    $dialog_content_border: solid 1px #00000010;
+
+        // GLOBAL TRANSITION
+    $dialog_transition: all .2s ease;
+
+        // DEFAULT BUTTONS
+    $button_padding: 8px 24px;
+    $button_font_size: inherit;
+    $button_font_family: inherit;
+    $button_font_weight: 700;
+    $button_letter_spacing: .4px;
+    $button_border_radius: 2px;
+    $button_gap: 8px;
+
+    $button_primary_color: $PRIMARY;
+    $button_primary_hover: $PRIMARY_L10;
+    $button_primary_border: none;
+    $button_primary_border_hover: transparent;
+
+    $button_text_color: #FFF;
+    $button_text_hover: #F8F8F8;
+    $button_text_border: none;
+    $button_text_border_hover: transparent;
+
+    
 .wk-dialog {
     position: fixed;
     top: 0;
@@ -6,11 +52,6 @@
     height: 100%;
     display: none;
 
-    --dialog-padding: 24px;
-    @media screen and (max-width: 600px) {
-        --dialog-padding: 16px;
-    }
-
     &-modal {
         width: 100%;
         height: 100%;
@@ -18,7 +59,7 @@
         display: flex;
         align-items: center;
         opacity: 0;
-        transition: all .2s ease;
+        transition: $dialog_transition;
 
         &--invisible {
             background-color: transparent !important;
@@ -36,7 +77,7 @@
         position: relative;
         overflow: hidden;
         transform: scale(.95);
-        transition: all .2s ease;
+        transition: $dialog_transition;
 
         @media screen and (max-width: 600px) {
             max-width: 100% !important;
@@ -56,9 +97,9 @@
         }
 
         // STYLES: DIALOG WINDOW
-        background-color: #FFF;
-        border-radius: 4px;
-        box-shadow: 4px 4px 16px rgba(#000, .2);
+        background-color: $dialog_background;
+        border-radius: $dialog_border_radius;
+        box-shadow: $dialog_shadow;
         // ---
 
         &__title {
@@ -72,12 +113,12 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;
-                padding: 24px var(--dialog-padding);
+                padding: 24px $dialog_padding;
 
                 // STYLES: TITLE
-                font-size: 20px;
+                font-size: $dialog_title_font_size;
                 line-height: 1em;
-                font-weight: $FONT_WEIGHT_BOLD;
+                font-weight: $dialog_title_font_weight;
                 // ---
             }
         }
@@ -85,7 +126,7 @@
         &__close {
             padding: 0;
             margin: 0;
-            margin-right: var(--dialog-padding);
+            margin-right: $dialog_padding;
             background-color: transparent;
             border: none;
             cursor: pointer;
@@ -95,17 +136,17 @@
                 pointer-events: none;
 
                 // STYLES: CLOSE BUTTON ICON
-                width: 24px;
-                height: 24px;
+                width: $dialog_close_button_size;
+                height: $dialog_close_button_size;
                 // ---
             }
 
             // STYLES: CLOSE BUTTON
-            color: #000;
-            transition: all .2s ease;
+            color: $dialog_close_button_color;
+            transition: $dialog_transition;
 
             &:hover {
-                color: $PRIMARY;
+                color: $dialog_close_button_hover;
             }
             // ---
         }
@@ -120,9 +161,9 @@
             }
 
             // STYLES: CONTENT
-            padding: var(--dialog-padding);
-            border-top: solid 1px #00000010;
-            border-bottom: solid 1px #00000010;
+            padding: $dialog_padding;
+            border-top: $dialog_content_border;
+            border-bottom: $dialog_content_border;
             // ---
         }
 
@@ -130,46 +171,62 @@
             width: 100%;
 
             // STYLES: CONTENT
-            padding: var(--dialog-padding);
+            padding: $dialog_padding;
             // ---
         }
     }
 
     &-button {
         display: inline-block;
-        border: none;
         font-size: inherit;
         line-height: 1em;
         text-align: center;
         font-family: inherit;
         font-weight: $FONT_WEIGHT_BOLD;
-        letter-spacing: .4px;
+        letter-spacing: $button_letter_spacing;
         cursor: pointer;
-        padding: 8px 24px;
-        border-radius: 2px;
-        transition: all .2s ease;
-        &:not(:last-of-type) {
-            margin-left: 8px;
-        }
+        padding: $button_padding;
+        border-radius: $button_border_radius;
+        transition: $dialog_transition;
 
-        background-color: $PRIMARY;
+        background-color: $button_primary_color;
+        border: $button_primary_border;
         &:hover {
-            background-color: $PRIMARY_L;
+            background-color: $button_primary_hover;
+            border: $button_primary_border_hover;
         }
 
         &--text {
-            background-color: transparent;
+            background-color: $button_text_color;
+            border: $button_text_border;
             &:hover {
-                background-color: #F8F8F8;
+                background-color: $button_text_hover;
+                border: $button_text_border_hover;
             }
         }
     }
 
     &-actions {
-        display: flex;
-        flex-direction: row-reverse;
-        align-items: center;
+        &-right {
+            display: flex;
+            gap: $button_gap;
+            flex-direction: row-reverse;
+            align-items: center;
+        }
+        &-left {
+            display: flex;
+            gap: $button_gap;
+            flex-direction: row;
+            align-items: center;
+        }
+        &-expand {
+            @media screen and (max-width: 390px) {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
     }
+        
 
 }
 

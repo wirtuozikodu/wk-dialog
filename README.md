@@ -10,7 +10,7 @@ Uniwersalne, interaktywne okna dialogowe w formie komponentów Twig, oparte o cz
  5. [Dostępne metody](#metody)
  6. [Otwieranie/zamykanie okien](#otwieranie-zamykanie)
  7. [Zdarzenia](#zdarzenia)
- 8. [Domyślne klasy przycisków](#klasy-przyciskow)
+ 8. [Style](#style)
 
 <h2 id="informacje">1. Informacje podstawowe</h2>
 
@@ -149,7 +149,7 @@ Rozgłaszane zdarzenia to:
 
 Ponadto domyślny obiekt przekazywany funkcji obsługującej zdarzenie zawiera następujące właściwości:
  - `.dialog` - obiekt okna dialogowego rozgłaszającego zdarzenie. Udostępnia wszystkie funkcjonalności dane dialogu, między innymi wywoływanie metod czy dodawanie kolejnych zdarzeń.
- - `.actionNode` - element odpowiedzialny za wywołanie zdarzenia (np. `<button>` z określonym atrybutem `data-open-dialog`); UWAGA: tylko w przypadku `'open'` oraz `'close'`.
+ - `.triggerNode` - element odpowiedzialny za wywołanie zdarzenia (np. `<button>` z określonym atrybutem `data-open-dialog`); UWAGA: tylko w przypadku `'open'` oraz `'close'`.
 
 Przykład handlera dla zdarzenia:
 ```javascript
@@ -164,13 +164,17 @@ wkDialogs.dialog_alpha.on('open', function(e) {
 ```
 handler naturalnie może być również funkcją strzałkową.
 
-<h2 id="klasy-przyciskow">8. Domyślne klasy przycisków</h2>
+<h2 id="style">8. Style</h2>
 
 [Powrót do spisu treści](#spis-tresci)
 
-Plik `_wk-dialog.scss` oprócz domyślnego stylowania okna dialogowego, zawiera również uniwersalne style przycisków. Są to kolejno:
+Plik `_wk-dialog.scss` zawiera domyślne stylowanie okna dialogowego. Podstawowe parametry zapisane są w zmiennych SCSS na początku pliku, zalecany sposób stylowania to ich edycja.
 
- - `.wk-dialog-actions` - uniwersalny wrapper dla przycisków (domyślnie odwraca ich kolejność i umieszcza je z prawej strony np. stopki),
+Plik `_wk-dialog.scss` oprócz domyślnego stylowania okna dialogowego, zawiera również uniwersalne klasy dla stopki. Są to kolejno:
+
+ - `.wk-dialog-actions-left` - uniwersalny wrapper dla przycisków - umieszcza je z lewej strony,
+ - `.wk-dialog-actions-right` - uniwersalny wrapper dla przycisków - umieszcza je z prawej strony i odwraca kolejność,
+ - `.wk-dialog-actions-expand` - klasa pozwalająca na uzyskanie 100% szerokości przycisków na urządzeniach mobilnych. UWAGA: tylko w połączeniu z jedną z powyższych dwóch kas.
  - `.wk-dialog-button` - uniwersalny przycisk akcji (domyślnie otrzymuje kolor ze zmiennej $PRIMARY),
  - `.wk-dialog-button--text` - uniwersalny przycisk tekstowy (domyślnie otrzymuje biały kolor),
 

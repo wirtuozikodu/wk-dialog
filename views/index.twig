@@ -13,13 +13,13 @@
 
     {% embed 'components/wk-dialog.twig' with {
         id: 'dialog_beta',
-        maxWidth: 700,
+        maxWidth: '30em',
         hideCloseButton: false,
         hideModal: true,
-        isPersistent: true,
+        isPersistent: false,
         noClickAnimation: false,
-        value: true,
-        allowBodyScroll: false
+        value: false,
+        allowBodyScroll: true
     } only %}
         {% block title %}
             Tytuł okna dialogowego
@@ -40,13 +40,13 @@
         isPersistent: true,
         noClickAnimation: false,
         value: true,
-        allowBodyScroll: true
+        allowBodyScroll: false
     } only %}
         {% block title %}
             Przykładowy tytuł okna dialogowego
         {% endblock %}
         {% block footer %}
-            <div class="wk-dialog-actions">
+            <div class="wk-dialog-actions-right wk-dialog-actions-expand">
                 <button class="wk-dialog-button" data-open-dialog="dialog_beta">Zatwierdź</button>
                 <button class="wk-dialog-button wk-dialog-button--text" data-close-dialog="{{ id }}">Anuluj</button>
             </div>
@@ -67,7 +67,8 @@
     <script>
 
         window.wkDialogs.dialog_alpha.on('open', (e) => {
-            console.log(e.dialog.value);
+            console.log('To ja byłem');
+            console.log(e.triggerNode);
         })
         window.wkDialogs.dialog_alpha.once('close', (e) => {
             console.log(e.dialog.el);
