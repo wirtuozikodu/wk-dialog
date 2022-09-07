@@ -168,9 +168,7 @@ handler naturalnie może być również funkcją strzałkową.
 
 [Powrót do spisu treści](#spis-tresci)
 
-Plik `_wk-dialog.scss` zawiera domyślne stylowanie okna dialogowego. Podstawowe parametry zapisane są w zmiennych CSS na początku pliku, zalecany sposób stylowania to ich edycja. UWAGA: Chcąc przekazać wartość zmiennej SCSS do natywnej zmiennej CSS, należy użyć zapisu:
-
-`--zmienna-css: #{$zmienna_scss};`
+Plik `_wk-dialog.scss` zawiera domyślne stylowanie okna dialogowego. Podstawowe parametry zapisane są w zmiennych CSS na początku pliku, zalecany sposób stylowania to ich edycja. UWAGA: Chcąc przekazać wartość zmiennej SCSS do natywnej zmiennej CSS, należy użyć zapisu `--zmienna-css: #{$zmienna_scss};`.
 
 Plik `_wk-dialog.scss` oprócz domyślnego stylowania okna dialogowego, zawiera również uniwersalne klasy dla stopki. Są to kolejno:
 
