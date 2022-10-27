@@ -2,9 +2,8 @@
 
 window.wkDialogs = window.wkDialogs || {};
 
-    // array of active dialogs (to close them in order)
+// array of active dialogs (to close them in proper order)
 window.wkDialogs.activeDialogs = [];
-
 
 // event bus
 
@@ -54,32 +53,25 @@ function WkDialogsEventBus() {
     };
 }
 
-
 // universal class - WkDialog
 
 function WkDialog(opts) {
-
-
     // setup
 
     this.el = opts.el;
     this.el_id = opts.el_id;
-    this.value = ( opts.value && opts.value == true ? true : false );
-    this.is_persistent = ( opts.is_persistent && opts.is_persistent == true ? true : false );
-    this.hide_modal = ( opts.hide_modal && opts.hide_modal == true ? true : false );
-    this.no_click_animation = ( opts.no_click_animation && opts.no_click_animation == true ? true : false );
-    this.allow_body_scroll = ( opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false );
-
+    this.value = opts.value && opts.value == true ? true : false;
+    this.is_persistent = opts.is_persistent && opts.is_persistent == true ? true : false;
+    this.hide_modal = opts.hide_modal && opts.hide_modal == true ? true : false;
+    this.no_click_animation =
+        opts.no_click_animation && opts.no_click_animation == true ? true : false;
+    this.allow_body_scroll =
+        opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false;
 
     // children
 
-    this.modal = document.querySelector(
-        '.wk-dialog-modal[data-dialog="' + this.el_id + '"]'
-    );
-    this.window = document.querySelector(
-        '.wk-dialog-window[data-dialog="' + this.el_id + '"]'
-    );
-
+    this.modal = document.querySelector('.wk-dialog-modal[data-dialog="' + this.el_id + '"]');
+    this.window = document.querySelector('.wk-dialog-window[data-dialog="' + this.el_id + '"]');
 
     // events
 
@@ -95,161 +87,161 @@ function WkDialog(opts) {
         return this.eventBus.off(event_name, handler);
     };
 
-
     // external methods
 
-        // open/close
+    // open/close
     this.getValue = () => {
         return this.value;
-    }
+    };
     this.setValue = (v, triggerNode) => {
-        if(v !== true && v !== false) return;
+        if (v !== true && v !== false) return;
 
         this.value = v;
 
-        if(this.value == true) {
-            this.eventBus.emit('open', {
+        if (this.value == true) {
+            this.eventBus.emit("open", {
                 dialog: this,
-                triggerNode: (triggerNode ? triggerNode : null)
+                triggerNode: triggerNode ? triggerNode : null
             });
 
-            if(!this.allow_body_scroll) {
+            if (!this.allow_body_scroll) {
                 this.preventBodyScroll();
             }
             this.setOnTop();
 
-            if(this.hide_modal) {
-                this.modal.classList.add('wk-dialog-modal--invisible');
+            if (this.hide_modal) {
+                this.modal.classList.add("wk-dialog-modal--invisible");
             } else {
-                this.modal.classList.remove('wk-dialog-modal--invisible');
+                this.modal.classList.remove("wk-dialog-modal--invisible");
             }
 
-            this.el.style.display = 'block';
+            this.el.style.display = "block";
             setTimeout(() => {
-                this.modal.style.opacity = '1';
-                this.window.style.transform = 'scale(1)';
+                this.modal.style.opacity = "1";
+                this.window.style.transform = "scale(1)";
             }, 50);
 
             return;
         } else {
-            this.eventBus.emit('close', {
+            this.eventBus.emit("close", {
                 dialog: this,
-                triggerNode: (triggerNode ? triggerNode : null)
+                triggerNode: triggerNode ? triggerNode : null
             });
 
             this.allowBodyScroll();
             this.setOnBottom();
 
-            this.modal.style.opacity = '0';
-            this.window.style.transform = 'scale(.95)';
+            this.modal.style.opacity = "0";
+            this.window.style.transform = "scale(.95)";
             setTimeout(() => {
-                this.el.style.display = 'none';
-                this.el.style.zIndex = '0';
+                this.el.style.display = "none";
+                this.el.style.zIndex = "0";
             }, 250);
 
             return;
         }
-    }
+    };
 
-        // CSS dialog max-width
+    // CSS dialog max-width
     this.getMaxWidth = () => {
         return this.window.style.maxWidth;
-    }
-    this.setMaxWidth = (v) => {
-        if(!isNaN(v)) {
-            this.window.style.maxWidth = v + 'px';
+    };
+    this.setMaxWidth = v => {
+        if (!isNaN(v)) {
+            this.window.style.maxWidth = v + "px";
             return;
         } else {
             this.window.style.maxWidth = v;
             return;
         }
-    }
+    };
 
-        // persistent state for this.cancel()
+    // persistent state for this.cancel()
     this.getPersistent = () => {
         return this.is_persistent;
-    }
-    this.setPersistent = (v) => {
-        if(v !== true && v !== false) return;
+    };
+    this.setPersistent = v => {
+        if (v !== true && v !== false) return;
 
         this.is_persistent = v;
         return;
-    }
+    };
 
-        // modal visibility
+    // modal visibility
     this.getHideModal = () => {
         return this.hide_modal;
-    }
-    this.setHideModal = (v) => {
-        if(v !== true && v !== false) return;
+    };
+    this.setHideModal = v => {
+        if (v !== true && v !== false) return;
 
         this.hide_modal = v;
         return;
-    }
+    };
 
-        // cancel animation visibility
+    // cancel animation visibility
     this.getNoClickAnimation = () => {
         return this.no_click_animation;
-    }
-    this.setNoClickAnimation = (v) => {
-        if(v !== true && v !== false) return;
+    };
+    this.setNoClickAnimation = v => {
+        if (v !== true && v !== false) return;
 
         this.no_click_animation = v;
 
-        if(this.no_click_animation === true) this.window.classList.add('wk-dialog-window--no-shake');
-        if(this.no_click_animation === false) this.window.classList.remove('wk-dialog-window--no-shake');
+        if (this.no_click_animation === true)
+            this.window.classList.add("wk-dialog-window--no-shake");
+        if (this.no_click_animation === false)
+            this.window.classList.remove("wk-dialog-window--no-shake");
 
         return;
-    }
+    };
 
-        // state of scroll blocking feature
+    // state of scroll blocking feature
     this.getAllowBodyScroll = () => {
         return this.allow_body_scroll;
-    }
-    this.setAllowBodyScroll = (v) => {
-        if(v !== true && v !== false) return;
+    };
+    this.setAllowBodyScroll = v => {
+        if (v !== true && v !== false) return;
 
         this.allow_body_scroll = v;
 
-        if(this.value === true) {
-            if(this.allow_body_scroll === true) this.allowBodyScroll();
-            if(this.allow_body_scroll === false) this.preventBodyScroll();
+        if (this.value === true) {
+            if (this.allow_body_scroll === true) this.allowBodyScroll();
+            if (this.allow_body_scroll === false) this.preventBodyScroll();
         }
 
         return;
-    }
-
+    };
 
     // internal methods
 
-        // cancel ("soft close")
+    // cancel ("soft close")
     this.cancel = () => {
-        if(this.is_persistent) {
-            this.eventBus.emit('cancel', {
+        if (this.is_persistent) {
+            this.eventBus.emit("cancel", {
                 dialog: this
             });
 
-            this.window.style.animation = 'shakeWindow .2s ease';
+            this.window.style.animation = "shakeWindow .2s ease";
             setTimeout(() => {
-                this.window.style.animation = 'none';
+                this.window.style.animation = "none";
                 return;
-            }, 200)
+            }, 200);
         } else {
             this.setValue(false);
             return;
         }
-    }
+    };
 
     this.preventBodyScroll = () => {
-        document.body.style.overflowY = 'hidden';
+        document.body.style.overflowY = "hidden";
         return;
-    }
+    };
     this.allowBodyScroll = () => {
-        if(wkDialogs.activeDialogs.length > 1) return;
+        if (wkDialogs.activeDialogs.length > 1) return;
 
-        document.body.style.overflowY = 'auto';
+        document.body.style.overflowY = "auto";
         return;
-    }
+    };
 
     this.setOnTop = () => {
         document.body.appendChild(document.getElementById(this.el_id));
@@ -257,71 +249,69 @@ function WkDialog(opts) {
         wkDialogs.activeDialogs.push(this.el_id);
 
         return;
-    }
+    };
     this.setOnBottom = () => {
         let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
-        if(closingIndex !== -1) {
+        if (closingIndex !== -1) {
             wkDialogs.activeDialogs.splice(closingIndex, 1);
         }
 
         return;
-    }
+    };
 
+    // mounting
 
-    // mounting 
-
-        // opening if initial value=true
-    if(this.value == true) {
+    // opening if initial value=true
+    if (this.value == true) {
         return this.setValue(true);
     }
-
 }
 
-    // global event listeners for core functions
-window.addEventListener('DOMContentLoaded', () => {
-
-        // binded DOM elements
-    document.body.addEventListener('click', function(e) {;
-            // elements opening dialog
-        if(e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
-                // opening the dialog
+// global event listeners for core functions
+window.addEventListener("DOMContentLoaded", () => {
+    // binded DOM elements
+    document.body.addEventListener("click", function (e) {
+        // elements opening dialog
+        if (e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
+            // opening the dialog
             wkDialogs[e.target.dataset.openDialog].setValue(true, e.target);
             return;
         }
-            // elements closing dialog
-        else if(e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
-                // closing the dialog
+        // elements closing dialog
+        else if (e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
+            // closing the dialog
             wkDialogs[e.target.dataset.closeDialog].setValue(false, e.target);
             return;
         }
-            // cancel feature
-        else if(e.target.classList.contains('wk-dialog-modal')) {
-                // cancel attempt
+        // cancel feature
+        else if (e.target.classList.contains("wk-dialog-modal")) {
+            // cancel attempt
             wkDialogs[e.target.dataset.dialog].cancel();
             return;
         }
-    })
-    
-        // global ESC function triggering cancel() method
-    document.addEventListener('keydown', function(e){
-        if(e.key !== "Escape") return;
-        if(window.wkDialogs.activeDialogs.length === 0) return;
-        
+    });
+
+    // global ESC function triggering cancel() method
+    document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape") return;
+        if (window.wkDialogs.activeDialogs.length === 0) return;
+
         window.wkDialogs[wkDialogs.activeDialogs[wkDialogs.activeDialogs.length - 1]].cancel();
-    
+
         return;
     });
-})
+});
 
-
-    // getting the highest z-index of element (body by default)
+// getting the highest z-index of element (body by default)
 function getMaxZIndex(element) {
-    let children_array = (element ? element.querySelectorAll('*') : document.querySelectorAll('body *'));
+    let children_array = element
+        ? element.querySelectorAll("*")
+        : document.querySelectorAll("body *");
 
     return Math.max(
-        ...Array.from(children_array, el =>
-            parseFloat(window.getComputedStyle(el).zIndex),
-        ).filter(zIndex => !Number.isNaN(zIndex)),
-        0,
+        ...Array.from(children_array, el => parseFloat(window.getComputedStyle(el).zIndex)).filter(
+            zIndex => !Number.isNaN(zIndex)
+        ),
+        0
     );
 }
