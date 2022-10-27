@@ -2,22 +2,23 @@
 
 window.wkDialogs = window.wkDialogs || {};
 
-// array of active dialogs (to close them in proper order)
+// array of active dialogs (to close them in order)
 window.wkDialogs.activeDialogs = [];
 
 // event bus
+class WkDialogsEventBus {
+    constructor() {
+        this._events = {};
+    }
 
-function WkDialogsEventBus() {
-    this._events = {};
-
-    this.on = (event_name, handler) => {
+    on = (event_name, handler) => {
         this.registerEvent(event_name, handler, "on");
     };
-    this.once = (event_name, handler) => {
+    once = (event_name, handler) => {
         this.registerEvent(event_name, handler, "once");
     };
 
-    this.registerEvent = (event_name, handler, t) => {
+    registerEvent = (event_name, handler, t) => {
         if (this._events[event_name] == undefined) this._events[event_name] = [];
         this._events[event_name].push({
             t: t,
@@ -25,7 +26,7 @@ function WkDialogsEventBus() {
         });
     };
 
-    this.off = (event_name, handler) => {
+    off = (event_name, handler) => {
         if (this._events[event_name] == undefined) return;
         var ix = -1;
         var hts = handler.toString();
@@ -38,7 +39,7 @@ function WkDialogsEventBus() {
         if (ix !== -1) this._events[event_name].splice(ix, 1);
     };
 
-    this.emit = (event_name, payload) => {
+    emit = (event_name, payload) => {
         if (this._events[event_name] == undefined) return;
         var todel = [];
         for (var i = 0; i < this._events[event_name].length; i++) {
@@ -55,45 +56,46 @@ function WkDialogsEventBus() {
 
 // universal class - WkDialog
 
-function WkDialog(opts) {
-    // setup
+class WkDialog {
+    constructor(opts) {
+        // setup
+        this.el = opts.el;
+        this.el_id = opts.el_id;
+        this.value = opts.value && opts.value == true ? true : false;
+        this.is_persistent = opts.is_persistent && opts.is_persistent == true ? true : false;
+        this.hide_modal = opts.hide_modal && opts.hide_modal == true ? true : false;
+        this.no_click_animation =
+            opts.no_click_animation && opts.no_click_animation == true ? true : false;
+        this.allow_body_scroll =
+            opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false;
 
-    this.el = opts.el;
-    this.el_id = opts.el_id;
-    this.value = opts.value && opts.value == true ? true : false;
-    this.is_persistent = opts.is_persistent && opts.is_persistent == true ? true : false;
-    this.hide_modal = opts.hide_modal && opts.hide_modal == true ? true : false;
-    this.no_click_animation =
-        opts.no_click_animation && opts.no_click_animation == true ? true : false;
-    this.allow_body_scroll =
-        opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false;
+        // children
+        this.modal = document.querySelector('.wk-dialog-modal[data-dialog="' + this.el_id + '"]');
+        this.window = document.querySelector('.wk-dialog-window[data-dialog="' + this.el_id + '"]');
 
-    // children
+        // events
+        this.eventBus = new WkDialogsEventBus();
 
-    this.modal = document.querySelector('.wk-dialog-modal[data-dialog="' + this.el_id + '"]');
-    this.window = document.querySelector('.wk-dialog-window[data-dialog="' + this.el_id + '"]');
+        this.mountSelf();
+    }
 
-    // events
-
-    this.eventBus = new WkDialogsEventBus();
-
-    this.on = (event_name, handler) => {
+    on = (event_name, handler) => {
         return this.eventBus.on(event_name, handler);
     };
-    this.once = (event_name, handler) => {
+    once = (event_name, handler) => {
         return this.eventBus.once(event_name, handler);
     };
-    this.off = (event_name, handler) => {
+    off = (event_name, handler) => {
         return this.eventBus.off(event_name, handler);
     };
 
     // external methods
 
     // open/close
-    this.getValue = () => {
+    getValue = () => {
         return this.value;
     };
-    this.setValue = (v, triggerNode) => {
+    setValue = (v, triggerNode) => {
         if (v !== true && v !== false) return;
 
         this.value = v;
@@ -143,10 +145,10 @@ function WkDialog(opts) {
     };
 
     // CSS dialog max-width
-    this.getMaxWidth = () => {
+    getMaxWidth = () => {
         return this.window.style.maxWidth;
     };
-    this.setMaxWidth = v => {
+    setMaxWidth = v => {
         if (!isNaN(v)) {
             this.window.style.maxWidth = v + "px";
             return;
@@ -157,10 +159,10 @@ function WkDialog(opts) {
     };
 
     // persistent state for this.cancel()
-    this.getPersistent = () => {
+    getPersistent = () => {
         return this.is_persistent;
     };
-    this.setPersistent = v => {
+    setPersistent = v => {
         if (v !== true && v !== false) return;
 
         this.is_persistent = v;
@@ -168,10 +170,10 @@ function WkDialog(opts) {
     };
 
     // modal visibility
-    this.getHideModal = () => {
+    getHideModal = () => {
         return this.hide_modal;
     };
-    this.setHideModal = v => {
+    setHideModal = v => {
         if (v !== true && v !== false) return;
 
         this.hide_modal = v;
@@ -179,10 +181,10 @@ function WkDialog(opts) {
     };
 
     // cancel animation visibility
-    this.getNoClickAnimation = () => {
+    getNoClickAnimation = () => {
         return this.no_click_animation;
     };
-    this.setNoClickAnimation = v => {
+    setNoClickAnimation = v => {
         if (v !== true && v !== false) return;
 
         this.no_click_animation = v;
@@ -196,10 +198,10 @@ function WkDialog(opts) {
     };
 
     // state of scroll blocking feature
-    this.getAllowBodyScroll = () => {
+    getAllowBodyScroll = () => {
         return this.allow_body_scroll;
     };
-    this.setAllowBodyScroll = v => {
+    setAllowBodyScroll = v => {
         if (v !== true && v !== false) return;
 
         this.allow_body_scroll = v;
@@ -215,7 +217,7 @@ function WkDialog(opts) {
     // internal methods
 
     // cancel ("soft close")
-    this.cancel = () => {
+    cancel = () => {
         if (this.is_persistent) {
             this.eventBus.emit("cancel", {
                 dialog: this
@@ -232,25 +234,25 @@ function WkDialog(opts) {
         }
     };
 
-    this.preventBodyScroll = () => {
+    preventBodyScroll = () => {
         document.body.style.overflowY = "hidden";
         return;
     };
-    this.allowBodyScroll = () => {
+    allowBodyScroll = () => {
         if (wkDialogs.activeDialogs.length > 1) return;
 
         document.body.style.overflowY = "auto";
         return;
     };
 
-    this.setOnTop = () => {
+    setOnTop = () => {
         document.body.appendChild(document.getElementById(this.el_id));
         this.el.style.zIndex = getMaxZIndex() + 1;
         wkDialogs.activeDialogs.push(this.el_id);
 
         return;
     };
-    this.setOnBottom = () => {
+    setOnBottom = () => {
         let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
         if (closingIndex !== -1) {
             wkDialogs.activeDialogs.splice(closingIndex, 1);
@@ -260,11 +262,11 @@ function WkDialog(opts) {
     };
 
     // mounting
-
-    // opening if initial value=true
-    if (this.value == true) {
-        return this.setValue(true);
-    }
+    mountSelf = () => {
+        if (this.value == true) {
+            return this.setValue(true);
+        }
+    };
 }
 
 // global event listeners for core functions
