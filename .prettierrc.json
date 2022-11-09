@@ -5,7 +5,7 @@
     "embeddedLanguageFormatting": "auto",
     "endOfLine": "lf",
     "htmlWhitespaceSensitivity": "css",
-    "printWidth": 100,
+    "printWidth": 140,
     "quoteProps": "consistent",
     "semi": true,
     "singleAttributePerLine": true,

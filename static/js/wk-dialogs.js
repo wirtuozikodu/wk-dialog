@@ -55,218 +55,203 @@ class WkDialogsEventBus {
 }
 
 // universal class - WkDialog
-
-class WkDialog {
+class WkDialog extends WkDialogsEventBus {
     constructor(opts) {
-        // setup
-        this.el = opts.el;
-        this.el_id = opts.el_id;
-        this.value = opts.value && opts.value == true ? true : false;
-        this.is_persistent = opts.is_persistent && opts.is_persistent == true ? true : false;
-        this.hide_modal = opts.hide_modal && opts.hide_modal == true ? true : false;
-        this.no_click_animation =
-            opts.no_click_animation && opts.no_click_animation == true ? true : false;
-        this.allow_body_scroll =
-            opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false;
+        super();
 
-        // children
-        this.modal = document.querySelector('.wk-dialog-modal[data-dialog="' + this.el_id + '"]');
-        this.window = document.querySelector('.wk-dialog-window[data-dialog="' + this.el_id + '"]');
+        // ELEMENTS
+        this._el = opts.el;
+        this._el_id = opts.el_id;
+        this._modal_el = document.querySelector('.wk-dialog-modal[data-dialog="' + this._el_id + '"]');
+        this._window_el = document.querySelector('.wk-dialog-window[data-dialog="' + this._el_id + '"]');
 
-        // events
-        this.eventBus = new WkDialogsEventBus();
+        // STATE/CONFIG VARIABLES
+        this._value = opts.value && opts.value == true ? true : false;
+        this._is_persistent = opts.is_persistent && opts.is_persistent == true ? true : false;
+        this._hide_modal = opts.hide_modal && opts.hide_modal == true ? true : false;
+        this._no_click_animation = opts.no_click_animation && opts.no_click_animation == true ? true : false;
+        this._allow_body_scroll = opts.allow_body_scroll && opts.allow_body_scroll == true ? true : false;
 
-        this.mountSelf();
+        if (this._value === true) {
+            this.value = true;
+        }
     }
 
-    on = (event_name, handler) => {
-        return this.eventBus.on(event_name, handler);
-    };
-    once = (event_name, handler) => {
-        return this.eventBus.once(event_name, handler);
-    };
-    off = (event_name, handler) => {
-        return this.eventBus.off(event_name, handler);
-    };
+    // GETTERS
+    get el() {
+        return this._el;
+    }
+    get el_id() {
+        return this._el_id;
+    }
+    get modal_el() {
+        return this._modal_el;
+    }
+    get window_el() {
+        return this._window_el;
+    }
+    get value() {
+        return this._value;
+    }
+    get is_persistent() {
+        return this._is_persistent;
+    }
+    get hide_modal() {
+        return this._hide_modal;
+    }
+    get no_click_animation() {
+        return this._no_click_animation;
+    }
+    get allow_body_scroll() {
+        return this._allow_body_scroll;
+    }
+    get max_width() {
+        return this._window_el.style.maxWidth;
+    }
 
-    // external methods
+    // SETTERS
+    set value(v) {
+        if (v !== true) v !== false;
 
-    // open/close
-    getValue = () => {
-        return this.value;
-    };
-    setValue = (v, triggerNode) => {
-        if (v !== true && v !== false) return;
-
-        this.value = v;
-
-        if (this.value == true) {
-            this.eventBus.emit("open", {
-                dialog: this,
-                triggerNode: triggerNode ? triggerNode : null
-            });
-
-            if (!this.allow_body_scroll) {
-                this.preventBodyScroll();
-            }
-            this.setOnTop();
-
-            if (this.hide_modal) {
-                this.modal.classList.add("wk-dialog-modal--invisible");
-            } else {
-                this.modal.classList.remove("wk-dialog-modal--invisible");
-            }
-
-            this.el.style.display = "block";
-            setTimeout(() => {
-                this.modal.style.opacity = "1";
-                this.window.style.transform = "scale(1)";
-            }, 50);
-
-            return;
-        } else {
-            this.eventBus.emit("close", {
-                dialog: this,
-                triggerNode: triggerNode ? triggerNode : null
-            });
-
-            this.allowBodyScroll();
-            this.setOnBottom();
-
-            this.modal.style.opacity = "0";
-            this.window.style.transform = "scale(.95)";
-            setTimeout(() => {
-                this.el.style.display = "none";
-                this.el.style.zIndex = "0";
-            }, 250);
-
-            return;
-        }
-    };
-
-    // CSS dialog max-width
-    getMaxWidth = () => {
-        return this.window.style.maxWidth;
-    };
-    setMaxWidth = v => {
-        if (!isNaN(v)) {
-            this.window.style.maxWidth = v + "px";
-            return;
-        } else {
-            this.window.style.maxWidth = v;
-            return;
-        }
-    };
-
-    // persistent state for this.cancel()
-    getPersistent = () => {
-        return this.is_persistent;
-    };
-    setPersistent = v => {
-        if (v !== true && v !== false) return;
-
-        this.is_persistent = v;
-        return;
-    };
-
-    // modal visibility
-    getHideModal = () => {
-        return this.hide_modal;
-    };
-    setHideModal = v => {
-        if (v !== true && v !== false) return;
-
-        this.hide_modal = v;
-        return;
-    };
-
-    // cancel animation visibility
-    getNoClickAnimation = () => {
-        return this.no_click_animation;
-    };
-    setNoClickAnimation = v => {
-        if (v !== true && v !== false) return;
-
-        this.no_click_animation = v;
-
-        if (this.no_click_animation === true)
-            this.window.classList.add("wk-dialog-window--no-shake");
-        if (this.no_click_animation === false)
-            this.window.classList.remove("wk-dialog-window--no-shake");
-
-        return;
-    };
-
-    // state of scroll blocking feature
-    getAllowBodyScroll = () => {
-        return this.allow_body_scroll;
-    };
-    setAllowBodyScroll = v => {
-        if (v !== true && v !== false) return;
-
-        this.allow_body_scroll = v;
-
-        if (this.value === true) {
-            if (this.allow_body_scroll === true) this.allowBodyScroll();
-            if (this.allow_body_scroll === false) this.preventBodyScroll();
-        }
-
-        return;
-    };
-
-    // internal methods
-
-    // cancel ("soft close")
-    cancel = () => {
-        if (this.is_persistent) {
-            this.eventBus.emit("cancel", {
+        if (v === true && this._value !== true) {
+            this.emit("open:before", {
                 dialog: this
             });
 
-            this.window.style.animation = "shakeWindow .2s ease";
+            this._value = true;
+
+            this.emit("open", {
+                dialog: this
+            });
+
+            if (!this._allow_body_scroll) {
+                this.preventBodyScroll();
+            }
+
+            if (this._hide_modal) {
+                this._modal_el.classList.add("wk-dialog-modal--invisible");
+            } else {
+                this._modal_el.classList.remove("wk-dialog-modal--invisible");
+            }
+
+            this.setOnTop();
+            this._el.style.display = "block";
             setTimeout(() => {
-                this.window.style.animation = "none";
+                this._modal_el.style.opacity = "1";
+                this._window_el.style.transform = "scale(1)";
+            }, 50);
+
+            this.emit("open:after", {
+                dialog: this
+            });
+        } else if (this._value !== false) {
+            this.emit("close:before", {
+                dialog: this
+            });
+
+            this._value = false;
+
+            this.emit("close", {
+                dialog: this
+            });
+
+            this.allowBodyScroll();
+
+            this.setOnBottom();
+            this._modal_el.style.opacity = "0";
+            this._window_el.style.transform = "scale(.95)";
+            setTimeout(() => {
+                this._el.style.display = "none";
+                this._el.style.zIndex = "0";
+            }, 250);
+
+            this.emit("close:after", {
+                dialog: this
+            });
+        }
+    }
+    set is_persistent(v) {
+        if (v !== true && v !== false) return;
+
+        this._is_persistent = v;
+    }
+    set hide_modal(v) {
+        if (v !== true && v !== false) return;
+
+        this._hide_modal = v;
+    }
+    set no_click_animation(v) {
+        if (v !== true && v !== false) return;
+
+        this._no_click_animation = v;
+
+        if (this._no_click_animation === true) this._window_el.classList.add("wk-dialog-window--no-shake");
+        if (this._no_click_animation === false) this._window_el.classList.remove("wk-dialog-window--no-shake");
+    }
+    set allow_body_scroll(v) {
+        if (v !== true && v !== false) return;
+
+        this._allow_body_scroll = v;
+
+        if (this.value === true) {
+            if (this._allow_body_scroll === true) this.allowBodyScroll();
+            if (this._allow_body_scroll === false) this.preventBodyScroll();
+        }
+    }
+    set max_width(v) {
+        if (!isNaN(v)) {
+            this._window_el.style.maxWidth = v + "px";
+        } else {
+            this._window_el.style.maxWidth = v;
+        }
+    }
+
+    // METHODS
+
+    // cancel ("soft close")
+    cancel() {
+        if (this.is_persistent) {
+            this.emit("cancel", {
+                dialog: this
+            });
+
+            this._window_el.style.animation = "shakeWindow .2s ease";
+            setTimeout(() => {
+                this._window_el.style.animation = "none";
                 return;
             }, 200);
         } else {
-            this.setValue(false);
+            this.value = false;
             return;
         }
-    };
+    }
 
-    preventBodyScroll = () => {
+    preventBodyScroll() {
         document.body.style.overflowY = "hidden";
         return;
-    };
-    allowBodyScroll = () => {
+    }
+    allowBodyScroll() {
         if (wkDialogs.activeDialogs.length > 1) return;
 
         document.body.style.overflowY = "auto";
         return;
-    };
+    }
 
-    setOnTop = () => {
-        document.body.appendChild(document.getElementById(this.el_id));
-        this.el.style.zIndex = getMaxZIndex() + 1;
-        wkDialogs.activeDialogs.push(this.el_id);
+    setOnTop() {
+        document.body.appendChild(document.getElementById(this._el_id));
+        this._el.style.zIndex = getMaxZIndex() + 1;
+        wkDialogs.activeDialogs.push(this._el_id);
 
         return;
-    };
-    setOnBottom = () => {
-        let closingIndex = wkDialogs.activeDialogs.indexOf(this.el_id);
+    }
+    setOnBottom() {
+        let closingIndex = wkDialogs.activeDialogs.indexOf(this._el_id);
         if (closingIndex !== -1) {
             wkDialogs.activeDialogs.splice(closingIndex, 1);
         }
 
         return;
-    };
-
-    // mounting
-    mountSelf = () => {
-        if (this.value == true) {
-            return this.setValue(true);
-        }
-    };
+    }
 }
 
 // global event listeners for core functions
@@ -276,13 +261,13 @@ window.addEventListener("DOMContentLoaded", () => {
         // elements opening dialog
         if (e.target.dataset.openDialog && wkDialogs[e.target.dataset.openDialog]) {
             // opening the dialog
-            wkDialogs[e.target.dataset.openDialog].setValue(true, e.target);
+            wkDialogs[e.target.dataset.openDialog].value = true;
             return;
         }
         // elements closing dialog
         else if (e.target.dataset.closeDialog && wkDialogs[e.target.dataset.closeDialog]) {
             // closing the dialog
-            wkDialogs[e.target.dataset.closeDialog].setValue(false, e.target);
+            wkDialogs[e.target.dataset.closeDialog].value = false;
             return;
         }
         // cancel feature
@@ -306,14 +291,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
 // getting the highest z-index of element (body by default)
 function getMaxZIndex(element) {
-    let children_array = element
-        ? element.querySelectorAll("*")
-        : document.querySelectorAll("body *");
+    let children_array = element ? element.querySelectorAll("*") : document.querySelectorAll("body *");
 
     return Math.max(
-        ...Array.from(children_array, el => parseFloat(window.getComputedStyle(el).zIndex)).filter(
-            zIndex => !Number.isNaN(zIndex)
-        ),
+        ...Array.from(children_array, el => parseFloat(window.getComputedStyle(el).zIndex)).filter(zIndex => !Number.isNaN(zIndex)),
         0
     );
 }
